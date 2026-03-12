@@ -49,32 +49,33 @@ export const CustomInputPrompt: React.FC<CustomInputPromptProps> = ({
     <Box
       flexDirection="column"
       borderStyle="round"
-      borderColor="#8b5cf6"
-      paddingX={1}
+      borderColor="#22d3ee"
+      paddingX={2}
+      paddingY={1}
     >
-      <Box>
-        <Text bold color="#8b5cf6">
+      <Box marginBottom={1}>
+        <Text bold color="#22d3ee">
           Custom Message
         </Text>
       </Box>
 
-      <Box marginLeft={1}>
+      <Box>
         <Text>
-          <Text color="#e5e7eb">{beforeCursor}</Text>
-          <Text backgroundColor="#8b5cf6" color="#ffffff" bold>
+          <Text color="#e2e8f0">{beforeCursor}</Text>
+          <Text backgroundColor="#22d3ee" color="#0f172a" bold>
             {cursorChar}
           </Text>
-          <Text color="#e5e7eb">{afterCursor}</Text>
+          <Text color="#e2e8f0">{afterCursor}</Text>
           {displayValue.length === 0 && (
-            <Text color="#6b7280"> type your commit message...</Text>
+            <Text color="#64748b"> type your commit message...</Text>
           )}
         </Text>
       </Box>
 
       <Box marginTop={1}>
-        <Text color="#6b7280">
-          <Text color="#10b981">Enter</Text> submit{" "}
-          <Text color="#ef4444">Esc</Text> Cancel
+        <Text color="#94a3b8">
+          <Text color="#22c55e">Enter</Text> submit{" "}
+          <Text color="#f97316">Esc</Text> cancel
         </Text>
       </Box>
     </Box>

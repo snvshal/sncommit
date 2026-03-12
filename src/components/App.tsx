@@ -314,13 +314,19 @@ export const BetterCommitApp: React.FC<AppProps> = ({
   }
 
   return (
-    <Box flexDirection="column" padding={1}>
+    <Box
+      flexDirection="column"
+      paddingX={2}
+      paddingY={1}
+      borderStyle="round"
+      borderColor="#334155"
+    >
       {/* Header */}
-      <Box marginBottom={1}>
-        <Text bold color="#8b5cf6">
+      <Box marginBottom={1} alignItems="center">
+        <Text bold color="#22d3ee">
           Better-Commit
         </Text>
-        <Text color="#6b7280"> • AI-Powered Commit Suggestions</Text>
+        <Text color="#94a3b8"> • AI-powered commit suggestions</Text>
       </Box>
 
       {/* Staged Files */}
@@ -350,18 +356,21 @@ export const BetterCommitApp: React.FC<AppProps> = ({
       {/* Footer - hide when custom input is open */}
       {!isCustomInputMode && (
         <Box
-          borderTop={true}
-          borderStyle="single"
-          borderColor="#374151"
-          paddingTop={1}
-          paddingLeft={1}
-          paddingRight={1}
+          borderStyle="round"
+          borderColor="#334155"
+          paddingY={1}
+          paddingX={2}
         >
-          <Text color="#6b7280">
-            <Text color="#60a5fa">↑↓</Text> navigate{" "}
-            <Text color="#10b981">Enter</Text> select{" "}
-            <Text color="#ef4444">Esc</Text> exit
-          </Text>
+          <Box>
+            <Text color="#38bdf8">↑↓</Text>
+            <Text color="#94a3b8"> navigate</Text>
+            <Text color="#94a3b8">  </Text>
+            <Text color="#22c55e">Enter</Text>
+            <Text color="#94a3b8"> select</Text>
+            <Text color="#94a3b8">  </Text>
+            <Text color="#f97316">Esc</Text>
+            <Text color="#94a3b8"> exit</Text>
+          </Box>
         </Box>
       )}
     </Box>

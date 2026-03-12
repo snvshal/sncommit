@@ -88,13 +88,19 @@ export const TuiDialog: React.FC<DialogProps> = ({
     const afterCursor = displayValue.slice(cursorPosition + 1);
 
     return (
-      <Box borderStyle="round" borderColor="#6366f1" paddingX={1} flexGrow={1}>
+      <Box
+        borderStyle="round"
+        borderColor="#22d3ee"
+        flexGrow={1}
+        paddingY={1}
+        paddingX={2}
+      >
         <Text>
-          <Text color="#e5e7eb">{beforeCursor}</Text>
-          <Text backgroundColor="#8b5cf6" color="#ffffff" bold>
+          <Text color="#e2e8f0">{beforeCursor}</Text>
+          <Text backgroundColor="#22d3ee" color="#0f172a" bold>
             {cursorChar}
           </Text>
-          <Text color="#e5e7eb">{afterCursor}</Text>
+          <Text color="#e2e8f0">{afterCursor}</Text>
         </Text>
       </Box>
     );
@@ -104,13 +110,14 @@ export const TuiDialog: React.FC<DialogProps> = ({
     <Box
       flexDirection="column"
       flexGrow={1}
-      padding={2}
+      paddingY={1}
+      paddingX={2}
       borderStyle="round"
-      borderColor="#6366f1"
+      borderColor="#334155"
     >
       {/* Header */}
       <Box marginBottom={1}>
-        <Text bold color="#8b5cf6">
+        <Text bold color="#22d3ee">
           {title}
         </Text>
       </Box>
@@ -119,7 +126,7 @@ export const TuiDialog: React.FC<DialogProps> = ({
       {type === "select" ? (
         <Box flexDirection="column" marginBottom={1}>
           {options.map((option, index) => (
-            <Box key={option} paddingX={1}>
+            <Box key={option} paddingX={1} paddingY={0.5}>
               <Text
                 bold={index === selectedIndex}
                 inverse={index === selectedIndex}
@@ -135,7 +142,7 @@ export const TuiDialog: React.FC<DialogProps> = ({
           {renderInputField()}
           {type === "textarea" && (
             <Box marginTop={1}>
-              <Text color="#6b7280" dimColor>
+              <Text color="#64748b" dimColor>
                 Enter for new line • Tab to submit
               </Text>
             </Box>
@@ -145,32 +152,39 @@ export const TuiDialog: React.FC<DialogProps> = ({
 
       {/* Footer */}
       <Box
-        borderTop={true}
-        borderStyle="single"
-        borderColor="#374151"
-        paddingTop={1}
+        borderStyle="round"
+        borderColor="#334155"
+        paddingY={1}
+        paddingX={2}
       >
-        <Text color="#6b7280">
-          {type === "select" ? (
-            <Text>
-              <Text color="#60a5fa">↑↓</Text> Navigate •{" "}
-              <Text color="#10b981">Enter</Text> Confirm •{" "}
-              <Text color="#ef4444">Esc</Text> Cancel
-            </Text>
-          ) : type === "textarea" ? (
-            <Text>
-              <Text color="#60a5fa">←→</Text> Move •{" "}
-              <Text color="#10b981">Tab</Text> Submit •{" "}
-              <Text color="#ef4444">Esc</Text> Cancel
-            </Text>
-          ) : (
-            <Text>
-              <Text color="#60a5fa">←→</Text> Move •{" "}
-              <Text color="#10b981">Enter</Text> Confirm •{" "}
-              <Text color="#ef4444">Esc</Text> Cancel
-            </Text>
-          )}
-        </Text>
+        {type === "select" ? (
+          <Box>
+            <Text color="#38bdf8">↑↓</Text>
+            <Text color="#94a3b8"> navigate  </Text>
+            <Text color="#22c55e">Enter</Text>
+            <Text color="#94a3b8"> confirm  </Text>
+            <Text color="#f97316">Esc</Text>
+            <Text color="#94a3b8"> cancel</Text>
+          </Box>
+        ) : type === "textarea" ? (
+          <Box>
+            <Text color="#38bdf8">←→</Text>
+            <Text color="#94a3b8"> move  </Text>
+            <Text color="#22c55e">Tab</Text>
+            <Text color="#94a3b8"> submit  </Text>
+            <Text color="#f97316">Esc</Text>
+            <Text color="#94a3b8"> cancel</Text>
+          </Box>
+        ) : (
+          <Box>
+            <Text color="#38bdf8">←→</Text>
+            <Text color="#94a3b8"> move  </Text>
+            <Text color="#22c55e">Enter</Text>
+            <Text color="#94a3b8"> confirm  </Text>
+            <Text color="#f97316">Esc</Text>
+            <Text color="#94a3b8"> cancel</Text>
+          </Box>
+        )}
       </Box>
     </Box>
   );

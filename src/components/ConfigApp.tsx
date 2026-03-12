@@ -142,7 +142,6 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
     if (!val)
       return (
         <Text color={textColor} backgroundColor={bgColor}>
-          {" "}
           (not set)
         </Text>
       );
@@ -168,15 +167,18 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
   };
 
   return (
-    <Box flexDirection="column" padding={1} flexGrow={1} width="100%">
+    <Box
+      flexDirection="column"
+      paddingX={3}
+      paddingY={1}
+      flexGrow={1}
+      width="100%"
+      borderStyle="round"
+      borderColor="#334155"
+    >
       {/* Dialog or Main Content */}
       {activeDialog ? (
-        <Box
-          flexGrow={1}
-          justifyContent="center"
-          alignItems="center"
-          paddingX={2}
-        >
+        <Box flexGrow={1} justifyContent="center" alignItems="center">
           <TuiDialog
             title={activeDialog.title}
             type={activeDialog.type}
@@ -191,10 +193,17 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
           flexDirection="column"
           flexGrow={1}
           borderStyle="round"
-          borderColor="#374151"
-          paddingX={1}
-          marginBottom={1}
+          borderColor="#334155"
+          paddingX={2}
+          paddingTop={1}
+          paddingBottom={1}
         >
+          <Box marginBottom={1}>
+            <Text bold color="#22d3ee">
+              Configure Better-Commit
+            </Text>
+          </Box>
+
           {/* Menu Items */}
           <Box flexDirection="column" marginBottom={2}>
             {menuItems.map((item, index) => (
@@ -205,23 +214,23 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
                 paddingY={0.5}
                 paddingX={1}
               >
-                <Box flexGrow={0.6}>
+                <Box width={24}>
                   <Text
                     bold={index === menuIndex}
-                    color={index === menuIndex ? "#111827" : "#e5e7eb"}
+                    color={index === menuIndex ? "#0f172a" : "#e2e8f0"}
                     backgroundColor={
-                      index === menuIndex ? "#60a5fa" : undefined
+                      index === menuIndex ? "#38bdf8" : undefined
                     }
                   >
                     {index === menuIndex ? "› " : "  "}
                     {item.label}
                   </Text>
                 </Box>
-                <Box flexGrow={0.4}>
+                <Box flexGrow={1}>
                   <Text
-                    color={index === menuIndex ? "#111827" : "#e5e7eb"}
+                    color={index === menuIndex ? "#0f172a" : "#e2e8f0"}
                     backgroundColor={
-                      index === menuIndex ? "#60a5fa" : undefined
+                      index === menuIndex ? "#38bdf8" : undefined
                     }
                   >
                     {renderValue(index === menuIndex, item.key)}
@@ -232,26 +241,26 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
           </Box>
 
           {/* Actions */}
-          <Box flexDirection="row" marginBottom={2}>
+          <Box flexDirection="row" marginBottom={0}>
             <Box marginRight={2}>
               <Text
                 bold={menuIndex === menuItems.length}
-                color={menuIndex === menuItems.length ? "#111827" : "#e5e7eb"}
+                color={menuIndex === menuItems.length ? "#0f172a" : "#22c55e"}
                 backgroundColor={
-                  menuIndex === menuItems.length ? "#10b981" : undefined
+                  menuIndex === menuItems.length ? "#22c55e" : undefined
                 }
               >
-                {menuIndex === menuItems.length ? "› " : "  "}Save & Exit
+                {menuIndex === menuItems.length ? "› " : "  "} Save & Exit
               </Text>
             </Box>
             <Box>
               <Text
                 bold={menuIndex === menuItems.length + 1}
                 color={
-                  menuIndex === menuItems.length + 1 ? "#111827" : "#e5e7eb"
+                  menuIndex === menuItems.length + 1 ? "#0f172a" : "#ef4444"
                 }
                 backgroundColor={
-                  menuIndex === menuItems.length + 1 ? "#ef4444" : undefined
+                  menuIndex === menuItems.length + 1 ? "#f97316" : undefined
                 }
               >
                 {menuIndex === menuItems.length + 1 ? "› " : "  "}Cancel
@@ -263,18 +272,14 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
 
       {/* Footer - only show when no dialog is open */}
       {!activeDialog && (
-        <Box
-          borderTop={true}
-          borderStyle="single"
-          borderColor="#374151"
-          paddingTop={1}
-          paddingLeft={1}
-          paddingRight={1}
-        >
-          <Text color="#6b7280">
-            Use <Text color="#60a5fa">↑↓</Text> to navigate,{" "}
-            <Text color="#10b981">Enter</Text> to edit/select
-          </Text>
+        <Box borderStyle="round" borderColor="#334155" paddingY={1} paddingX={2}>
+          <Box>
+            <Text color="#94a3b8">Use </Text>
+            <Text color="#38bdf8">↑↓</Text>
+            <Text color="#94a3b8"> to navigate </Text>
+            <Text color="#22c55e">Enter</Text>
+            <Text color="#94a3b8"> to edit/select</Text>
+          </Box>
         </Box>
       )}
     </Box>

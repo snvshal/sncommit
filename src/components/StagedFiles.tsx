@@ -11,11 +11,12 @@ export const StagedFiles: React.FC<StagedFilesProps> = ({ files }) => {
     return (
       <Box
         borderStyle="round"
-        borderColor="#ef4444"
-        paddingX={1}
+        borderColor="#f97316"
+        paddingX={2}
+        paddingY={1}
         marginBottom={1}
       >
-        <Text color="#ef4444">No staged files found</Text>
+        <Text color="#f97316">No staged files found</Text>
       </Box>
     );
   }
@@ -24,27 +25,30 @@ export const StagedFiles: React.FC<StagedFilesProps> = ({ files }) => {
     <Box
       flexDirection="column"
       borderStyle="round"
-      borderColor="#374151"
-      paddingX={1}
+      borderColor="#334155"
+      paddingX={2}
+      paddingY={1}
       marginBottom={1}
     >
-      <Box>
-        <Text bold color="#8b5cf6">
+      <Box marginBottom={1}>
+        <Text bold color="#22d3ee">
           Staged Files
         </Text>
-        <Text color="#6b7280"> ({files.length})</Text>
+        <Text color="#64748b"> ({files.length})</Text>
       </Box>
 
       {files.slice(0, 6).map((file, index) => (
-        <Box key={index} marginLeft={1}>
-          <Text color="#10b981">•</Text>
-          <Text color="#e5e7eb"> {file.path}</Text>
+        <Box key={index} paddingLeft={1}>
+          <Box width={2}>
+            <Text color="#22c55e">•</Text>
+          </Box>
+          <Text color="#e2e8f0">{file.path}</Text>
         </Box>
       ))}
 
       {files.length > 6 && (
-        <Box marginLeft={1}>
-          <Text color="#6b7280">+{files.length - 6} more files</Text>
+        <Box paddingLeft={1}>
+          <Text color="#64748b">+{files.length - 6} more files</Text>
         </Box>
       )}
     </Box>
