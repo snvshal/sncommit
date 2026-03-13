@@ -63,8 +63,8 @@ export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
 
   if (isLoading) {
     return (
-      <Box borderStyle="round" borderColor="#374151" paddingX={1}>
-        <Text color="#6b7280">
+      <Box borderStyle="round" borderColor="#334155" paddingX={2} paddingY={1}>
+        <Text color="#94a3b8">
           {spinnerFrames[frame]} Generating commit suggestions...
         </Text>
       </Box>
@@ -73,8 +73,8 @@ export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
 
   if (suggestions.length === 0) {
     return (
-      <Box borderStyle="round" borderColor="#ef4444" paddingX={1}>
-        <Text color="#ef4444">No suggestions available</Text>
+      <Box borderStyle="round" borderColor="#f97316" paddingX={2} paddingY={1}>
+        <Text color="#f97316">No suggestions available</Text>
       </Box>
     );
   }
@@ -83,13 +83,15 @@ export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
     <Box
       flexDirection="column"
       borderStyle="round"
-      borderColor="#374151"
-      paddingX={1}
+      borderColor="#334155"
+      paddingX={2}
+      paddingY={1}
     >
-      <Box>
-        <Text bold color="#8b5cf6">
-          Commit Messages
+      <Box marginBottom={1}>
+        <Text bold color="#22d3ee">
+          Commit Suggestions
         </Text>
+        <Text color="#64748b"> ({suggestions.length})</Text>
       </Box>
 
       {suggestions.map((suggestion, index) => {
@@ -100,12 +102,13 @@ export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
             : suggestion.message;
 
         return (
-          <Box key={index} marginLeft={1}>
-            <Text color={isSelected ? "#10b981" : "#6b7280"}>
-              {isSelected ? "❯" : " "}
-            </Text>
-            <Text color={isSelected ? "#ffffff" : "#9ca3af"} bold={isSelected}>
-              {" "}
+          <Box key={index} paddingLeft={1}>
+            <Box width={2}>
+              <Text color={isSelected ? "#22c55e" : "#64748b"}>
+                {isSelected ? "›" : " "}
+              </Text>
+            </Box>
+            <Text color={isSelected ? "#e2e8f0" : "#94a3b8"} bold={isSelected}>
               {displayMsg}
             </Text>
           </Box>
@@ -113,40 +116,44 @@ export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
       })}
 
       {!isUsingFallback && (
-        <Box marginTop={1} marginLeft={1} flexDirection="row">
-          <Box marginRight={3}>
+        <Box marginTop={1} paddingLeft={1} flexDirection="row">
+          <Box marginRight={4}>
+            <Box width={2}>
+              <Text
+                color={
+                  selectedIndex === suggestions.length ? "#22c55e" : "#64748b"
+                }
+              >
+                {selectedIndex === suggestions.length ? "›" : " "}
+              </Text>
+            </Box>
             <Text
               color={
-                selectedIndex === suggestions.length ? "#10b981" : "#6b7280"
-              }
-            >
-              {selectedIndex === suggestions.length ? "❯" : " "}
-            </Text>
-            <Text
-              color={
-                selectedIndex === suggestions.length ? "#60a5fa" : "#6b7280"
+                selectedIndex === suggestions.length ? "#38bdf8" : "#64748b"
               }
               bold={selectedIndex === suggestions.length}
             >
-              {" "}
               ↻ Try again
             </Text>
           </Box>
           <Box>
+            <Box width={2}>
+              <Text
+                color={
+                  selectedIndex === suggestions.length + 1
+                    ? "#22c55e"
+                    : "#64748b"
+                }
+              >
+                {selectedIndex === suggestions.length + 1 ? "›" : " "}
+              </Text>
+            </Box>
             <Text
               color={
-                selectedIndex === suggestions.length + 1 ? "#10b981" : "#6b7280"
-              }
-            >
-              {selectedIndex === suggestions.length + 1 ? "❯" : " "}
-            </Text>
-            <Text
-              color={
-                selectedIndex === suggestions.length + 1 ? "#f59e0b" : "#6b7280"
+                selectedIndex === suggestions.length + 1 ? "#f59e0b" : "#64748b"
               }
               bold={selectedIndex === suggestions.length + 1}
             >
-              {" "}
               ✎ Custom input
             </Text>
           </Box>

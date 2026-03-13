@@ -48,22 +48,13 @@ program
     }
 
     try {
-      let exitMessage = "";
-      const { waitUntilExit } = render(
-        <ConfigApp
-          onExit={(message) => {
-            if (message) exitMessage = message;
-          }}
-        />,
-        {
-          stdout: process.stdout,
-          stdin: process.stdin,
-          patchConsole: true,
-          exitOnCtrlC: false,
-        },
-      );
+      const { waitUntilExit } = render(<ConfigApp onExit={() => {}} />, {
+        stdout: process.stdout,
+        stdin: process.stdin,
+        patchConsole: true,
+        exitOnCtrlC: false,
+      });
       await waitUntilExit();
-      if (exitMessage) console.log(exitMessage);
       process.exit(0);
     } catch (error) {
       handleRawModeError(
@@ -125,14 +116,11 @@ program.action(async () => {
     }
 
     // Only try to render if we have staged files
-    let exitMessage = "";
     const { waitUntilExit } = render(
       <BetterCommitApp
         addAll={options.all || false}
         pushAfterCommit={options.push || false}
-        onExit={(message) => {
-          if (message) exitMessage = message;
-        }}
+        onExit={() => {}}
       />,
       {
         stdout: process.stdout,
@@ -142,7 +130,6 @@ program.action(async () => {
       },
     );
     await waitUntilExit();
-    if (exitMessage) console.log(exitMessage);
     process.exit(0);
   } catch (error) {
     handleRawModeError(
