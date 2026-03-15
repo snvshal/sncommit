@@ -362,19 +362,37 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
                         paddingX={1}
                       >
                         <Text color={colors.text.primary}>
-                          {item.type === "password"
-                            ? editValue
-                                .split("")
-                                .map(() => "•")
-                                .join("") +
-                              (cursorPosition >= editValue.length ? "█" : "")
-                            : editValue
-                                .split("")
-                                .map((char, i) =>
-                                  i === cursorPosition ? "█" : char,
-                                )
-                                .join("") +
-                              (cursorPosition >= editValue.length ? "█" : "")}
+                          {item.type === "password" ? (
+                            <>
+                              <Text color={colors.warning}>
+                                {editValue
+                                  .split("")
+                                  .map(() => "•")
+                                  .join("")}
+                              </Text>
+                              <Text
+                                backgroundColor={colors.warning}
+                                color={colors.text.inverse}
+                              >
+                                {cursorPosition >= editValue.length ? " " : " "}
+                              </Text>
+                            </>
+                          ) : (
+                            <>
+                              <Text color={colors.text.primary}>
+                                {editValue.slice(0, cursorPosition)}
+                              </Text>
+                              <Text
+                                backgroundColor={colors.warning}
+                                color={colors.text.inverse}
+                              >
+                                {editValue[cursorPosition] || " "}
+                              </Text>
+                              <Text color={colors.text.primary}>
+                                {editValue.slice(cursorPosition + 1)}
+                              </Text>
+                            </>
+                          )}
                         </Text>
                       </Box>
                     </Box>
