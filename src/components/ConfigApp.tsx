@@ -259,7 +259,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
                       <Text
                         bold
                         color={
-                          isSel ? colors.primary : colors.background.primary
+                          isSel ? colors.warning : colors.background.primary
                         }
                       >
                         │
@@ -273,7 +273,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
                       paddingX={1}
                     >
                       <Text
-                        color={isSel ? colors.primary : colors.text.primary}
+                        color={isSel ? colors.warning : colors.text.primary}
                       >
                         {item.label}
                       </Text>
@@ -285,7 +285,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
                         <Text
                           bold
                           color={
-                            isSel ? colors.primary : colors.background.primary
+                            isSel ? colors.warning : colors.background.primary
                           }
                         >
                           │
@@ -318,7 +318,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
                               bold
                               color={
                                 optIdx === optionIndex
-                                  ? colors.primary
+                                  ? colors.warning
                                   : colors.background.primary
                               }
                             >
@@ -337,7 +337,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
                             <Text
                               color={
                                 optIdx === optionIndex
-                                  ? colors.primary
+                                  ? colors.warning
                                   : colors.text.muted
                               }
                             >
@@ -352,7 +352,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
                   {isExp && item.type !== "select" && (
                     <Box flexDirection="row" alignItems="center">
                       <Box width={1}>
-                        <Text bold color={colors.accent}>
+                        <Text bold color={colors.warning}>
                           │
                         </Text>
                       </Box>
@@ -361,7 +361,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
                         backgroundColor={colors.background.primary}
                         paddingX={1}
                       >
-                        <Text color={colors.primary}>
+                        <Text color={colors.text.primary}>
                           {item.type === "password"
                             ? editValue
                                 .split("")
