@@ -69,6 +69,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
 
   const [editValue, setEditValue] = useState("");
   const [optionIndex, setOptionIndex] = useState(0);
+  const [cursorPosition, setCursorPosition] = useState(0);
 
   const autoSave = useCallback(() => {
     const finalConfig = {
@@ -100,7 +101,9 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
         const optIdx = item.options.indexOf(currentValue as string);
         setOptionIndex(optIdx >= 0 ? optIdx : 0);
       } else {
-        setEditValue(String(config[item.key] || ""));
+        const val = String(config[item.key] || "");
+        setEditValue(val);
+        setCursorPosition(val.length);
       }
     },
     [menuItems, config],
@@ -109,6 +112,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
   const handleCollapse = useCallback(() => {
     setExpandedIndex(null);
     setEditValue("");
+    setCursorPosition(0);
   }, []);
 
   const handleSubmit = useCallback(
@@ -169,10 +173,26 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
       } else {
         if (key.return) {
           handleSubmit(expandedIndex);
+        } else if (key.leftArrow) {
+          setCursorPosition((prev) => Math.max(0, prev - 1));
+        } else if (key.rightArrow) {
+          setCursorPosition((prev) => Math.min(editValue.length, prev + 1));
         } else if (key.backspace || key.delete) {
-          setEditValue((prev) => prev.slice(0, -1));
+          if (cursorPosition > 0) {
+            setEditValue(
+              (prev) =>
+                prev.slice(0, cursorPosition - 1) + prev.slice(cursorPosition),
+            );
+            setCursorPosition((prev) => prev - 1);
+          }
         } else if (input && !key.ctrl && !key.meta) {
-          setEditValue((prev) => prev + input);
+          setEditValue(
+            (prev) =>
+              prev.slice(0, cursorPosition) +
+              input +
+              prev.slice(cursorPosition),
+          );
+          setCursorPosition((prev) => prev + input.length);
         }
       }
     } else {
@@ -303,8 +323,18 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
                       <Box flexGrow={1} backgroundColor="#1e293b" paddingX={1}>
                         <Text color="#a5b4fc">
                           {item.type === "password"
-                            ? "••••••••"
-                            : editValue + "_"}
+                            ? editValue
+                                .split("")
+                                .map(() => "•")
+                                .join("") +
+                              (cursorPosition >= editValue.length ? "█" : "")
+                            : editValue
+                                .split("")
+                                .map((char, i) =>
+                                  i === cursorPosition ? "█" : char,
+                                )
+                                .join("") +
+                              (cursorPosition >= editValue.length ? "█" : "")}
                         </Text>
                       </Box>
                     </Box>
