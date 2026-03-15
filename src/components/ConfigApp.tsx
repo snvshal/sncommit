@@ -213,7 +213,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
     const val = config[key];
 
     if (!val) return "(not set)";
-    if (key === "groqApiKey") return "••••••••";
+    if (key === "groqApiKey") return "••••••••••••••••";
 
     const strVal = String(val);
     if (key === "customPrompt") {
@@ -364,7 +364,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
                         <Text color={colors.text.primary}>
                           {item.type === "password" ? (
                             <>
-                              <Text color={colors.warning}>
+                              <Text color={colors.text.primary}>
                                 {editValue
                                   .split("")
                                   .map(() => "•")
