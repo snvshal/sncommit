@@ -263,51 +263,43 @@ export const BetterCommitApp: React.FC<AppProps> = ({
       <Box
         flexDirection="column"
         justifyContent="center"
-        alignItems="center"
         flexGrow={1}
-        padding={2}
+        paddingX={2}
+        paddingY={1}
+        borderStyle="round"
+        borderColor={colors.border.accent}
       >
-        <Box
-          flexDirection="column"
-          borderStyle="round"
-          borderColor={colors.border.accent}
-          paddingX={4}
-          paddingY={1}
-          flexGrow={1}
-          justifyContent="center"
-        >
-          <Box justifyContent="center" marginBottom={1}>
-            <Text bold color={colors.accent}>
-              {"\u2713"} Commit Successful
-            </Text>
-          </Box>
-          <Box justifyContent="center" marginBottom={1}>
-            <Text color={colors.primary}>{successMessage}</Text>
-          </Box>
+        <Box justifyContent="center" marginBottom={1}>
+          <Text bold color={colors.accent}>
+            {"\u2713"} Commit Successful
+          </Text>
+        </Box>
+        <Box justifyContent="center" marginBottom={1}>
+          <Text color={colors.primary}>{successMessage}</Text>
+        </Box>
 
-          {pushAfterCommit && pushLogs.length > 0 && (
-            <Box flexDirection="column" marginTop={1}>
-              <Box>
-                <Text bold color={colors.primary}>
-                  Push:
+        {pushAfterCommit && pushLogs.length > 0 && (
+          <Box flexDirection="column" marginTop={1}>
+            <Box>
+              <Text bold color={colors.primary}>
+                Push:
+              </Text>
+            </Box>
+            {pushLogs.map((log, index) => (
+              <Box key={index}>
+                <Text
+                  color={
+                    log.includes("failed") || log.includes("Failed")
+                      ? colors.error
+                      : colors.accent
+                  }
+                >
+                  {"\u2022"} {log}
                 </Text>
               </Box>
-              {pushLogs.map((log, index) => (
-                <Box key={index}>
-                  <Text
-                    color={
-                      log.includes("failed") || log.includes("Failed")
-                        ? colors.error
-                        : colors.accent
-                    }
-                  >
-                    {"\u2022"} {log}
-                  </Text>
-                </Box>
-              ))}
-            </Box>
-          )}
-        </Box>
+            ))}
+          </Box>
+        )}
       </Box>
     );
   }
