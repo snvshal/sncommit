@@ -352,7 +352,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
                   {isExp && item.type !== "select" && (
                     <Box flexDirection="row" alignItems="center">
                       <Box width={1}>
-                        <Text bold color={colors.primary}>
+                        <Text bold color={colors.accent}>
                           │
                         </Text>
                       </Box>
@@ -392,7 +392,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
                   <Text color={colors.text.secondary}> • </Text>
                   <Text color={colors.accent}>Enter</Text> confirm
                   <Text color={colors.text.secondary}> • </Text>
-                  <Text color={colors.warning}>Esc</Text> cancel
+                  <Text color={colors.error}>Esc</Text> cancel
                 </>
               ) : (
                 <>
@@ -400,7 +400,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
                   <Text color={colors.text.secondary}> • </Text>
                   <Text color={colors.accent}>Enter</Text> edit
                   <Text color={colors.text.secondary}> • </Text>
-                  <Text color={colors.warning}>Esc</Text> exit
+                  <Text color={colors.error}>Esc</Text> exit
                 </>
               )}
             </Text>

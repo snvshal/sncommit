@@ -80,7 +80,7 @@ export const CustomInputPrompt: React.FC<CustomInputPromptProps> = ({
       <Box marginTop={1}>
         <Text color={colors.text.secondary}>
           <Text color={colors.accent}>Enter</Text> submit{" "}
-          <Text color={colors.warning}>Esc</Text> cancel
+          <Text color={colors.error}>Esc</Text> cancel
         </Text>
       </Box>
     </Box>

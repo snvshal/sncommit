@@ -401,7 +401,7 @@ export const BetterCommitApp: React.FC<AppProps> = ({
             <Text color={colors.accent}>Enter</Text>
             <Text color={colors.text.secondary}> select</Text>
             <Text color={colors.text.secondary}> </Text>
-            <Text color={colors.warning}>Esc</Text>
+            <Text color={colors.error}>Esc</Text>
             <Text color={colors.text.secondary}> exit</Text>
           </Box>
         </Box>
