@@ -1,4 +1,4 @@
-# Better-Commit
+# Sncommit
 
 AI-powered git commit message generator with a beautiful TUI (Terminal User Interface).
 
@@ -22,8 +22,8 @@ AI-powered git commit message generator with a beautiful TUI (Terminal User Inte
 
 ```bash
 # Clone the repository
-git clone https://github.com/snvshal/better-commit.git
-cd better-commit
+git clone https://github.com/snvshal/sncommit.git
+cd sncommit
 
 # Install dependencies
 bun install
@@ -42,7 +42,7 @@ npm link
 First, configure your API key:
 
 ```bash
-better-commit config
+sncommit config
 ```
 
 Use the arrow keys to navigate and **Enter** to edit settings.
@@ -53,28 +53,28 @@ Run the tool in any git repository:
 
 ```bash
 # Run on currently staged files
-better-commit
+sncommit
 
 # Or stage all files and run (like git commit -am)
-better-commit -a
+sncommit -a
 
 # Push to remote after committing
-better-commit -p
+sncommit -p
 
 # Stage all files, commit, and push (like git commit -am && git push)
-better-commit -ap
+sncommit -ap
 ```
 
 ### Alias
 
-You can use the short alias `bc` instead of typing `better-commit`:
+You can use the short alias `sc` instead of typing `sncommit`:
 
 ```bash
-bc          # Generate commit
-bc -a       # Stage all and commit
-bc -p       # Commit and push
-bc -ap      # Stage all, commit, and push
-bc config   # Open configuration
+sc          # Generate commit
+sc -a       # Stage all and commit
+sc -p       # Commit and push
+sc -ap      # Stage all, commit, and push
+sc config   # Open configuration
 ```
 
 ### 3. Workflow
@@ -87,7 +87,7 @@ bc config   # Open configuration
 
 ## Configuration
 
-Run `better-commit config` to modify:
+Run `sncommit config` to modify:
 
 | Setting           | Description                             | Default                |
 | :---------------- | :-------------------------------------- | :--------------------- |

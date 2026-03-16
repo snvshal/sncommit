@@ -83,8 +83,8 @@ jobs:
 
       - name: Verify CLI works when installed globally
         run: |
-          better-commit --help
-          bc --help
+          sncommit --help
+          sc --help
 
       - name: Show package contents
         run: npm pack --dry-run

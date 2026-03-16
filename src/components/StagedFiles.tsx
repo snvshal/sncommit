@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Text } from "ink";
 import { GitFile } from "../types";
+import { colors } from "../theme/colors";
 
 interface StagedFilesProps {
   files: GitFile[];
@@ -11,12 +12,12 @@ export const StagedFiles: React.FC<StagedFilesProps> = ({ files }) => {
     return (
       <Box
         borderStyle="round"
-        borderColor="#f97316"
+        borderColor={colors.border.warning}
         paddingX={2}
         paddingY={1}
         marginBottom={1}
       >
-        <Text color="#f97316">No staged files found</Text>
+        <Text color={colors.warning}>No staged files found</Text>
       </Box>
     );
   }
@@ -25,30 +26,30 @@ export const StagedFiles: React.FC<StagedFilesProps> = ({ files }) => {
     <Box
       flexDirection="column"
       borderStyle="round"
-      borderColor="#334155"
+      borderColor={colors.border.default}
       paddingX={2}
       paddingY={1}
       marginBottom={1}
     >
       <Box marginBottom={1}>
-        <Text bold color="#22d3ee">
+        <Text bold color={colors.primary}>
           Staged Files
         </Text>
-        <Text color="#64748b"> ({files.length})</Text>
+        <Text color={colors.text.muted}> ({files.length})</Text>
       </Box>
 
       {files.slice(0, 6).map((file, index) => (
         <Box key={index} paddingLeft={1}>
           <Box width={2}>
-            <Text color="#22c55e">•</Text>
+            <Text color={colors.accent}>•</Text>
           </Box>
-          <Text color="#e2e8f0">{file.path}</Text>
+          <Text color={colors.text.primary}>{file.path}</Text>
         </Box>
       ))}
 
       {files.length > 6 && (
         <Box paddingLeft={1}>
-          <Text color="#64748b">+{files.length - 6} more files</Text>
+          <Text color={colors.text.muted}>+{files.length - 6} more files</Text>
         </Box>
       )}
     </Box>
