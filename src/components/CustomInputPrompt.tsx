@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Box, Text, useInput } from "ink";
+import { colors } from "../theme/colors";
 
 interface CustomInputPromptProps {
   value: string;
@@ -49,33 +50,37 @@ export const CustomInputPrompt: React.FC<CustomInputPromptProps> = ({
     <Box
       flexDirection="column"
       borderStyle="round"
-      borderColor="#22d3ee"
+      borderColor={colors.border.primary}
       paddingX={2}
       paddingY={1}
     >
       <Box marginBottom={1}>
-        <Text bold color="#22d3ee">
+        <Text bold color={colors.primary}>
           Custom Message
         </Text>
       </Box>
 
       <Box>
         <Text>
-          <Text color="#e2e8f0">{beforeCursor}</Text>
-          <Text backgroundColor="#22d3ee" color="#0f172a" bold>
+          <Text color={colors.text.primary}>{beforeCursor}</Text>
+          <Text
+            backgroundColor={colors.primary}
+            color={colors.text.inverse}
+            bold
+          >
             {cursorChar}
           </Text>
-          <Text color="#e2e8f0">{afterCursor}</Text>
+          <Text color={colors.text.primary}>{afterCursor}</Text>
           {displayValue.length === 0 && (
-            <Text color="#64748b"> type your commit message...</Text>
+            <Text color={colors.text.muted}> type your commit message...</Text>
           )}
         </Text>
       </Box>
 
       <Box marginTop={1}>
-        <Text color="#94a3b8">
-          <Text color="#22c55e">Enter</Text> submit{" "}
-          <Text color="#f97316">Esc</Text> cancel
+        <Text color={colors.text.secondary}>
+          <Text color={colors.accent}>Enter</Text> submit{" "}
+          <Text color={colors.error}>Esc</Text> cancel
         </Text>
       </Box>
     </Box>

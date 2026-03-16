@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Text, useInput } from "ink";
 import { CommitSuggestion } from "../types";
+import { colors } from "../theme/colors";
 
 interface CommitSuggestionsProps {
   suggestions: CommitSuggestion[];
@@ -63,8 +64,13 @@ export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
 
   if (isLoading) {
     return (
-      <Box borderStyle="round" borderColor="#334155" paddingX={2} paddingY={1}>
-        <Text color="#94a3b8">
+      <Box
+        borderStyle="round"
+        borderColor={colors.border.default}
+        paddingX={2}
+        paddingY={1}
+      >
+        <Text color={colors.text.secondary}>
           {spinnerFrames[frame]} Generating commit suggestions...
         </Text>
       </Box>
@@ -73,8 +79,13 @@ export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
 
   if (suggestions.length === 0) {
     return (
-      <Box borderStyle="round" borderColor="#f97316" paddingX={2} paddingY={1}>
-        <Text color="#f97316">No suggestions available</Text>
+      <Box
+        borderStyle="round"
+        borderColor={colors.border.warning}
+        paddingX={2}
+        paddingY={1}
+      >
+        <Text color={colors.warning}>No suggestions available</Text>
       </Box>
     );
   }
@@ -83,15 +94,15 @@ export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
     <Box
       flexDirection="column"
       borderStyle="round"
-      borderColor="#334155"
+      borderColor={colors.border.default}
       paddingX={2}
       paddingY={1}
     >
       <Box marginBottom={1}>
-        <Text bold color="#22d3ee">
+        <Text bold color={colors.primary}>
           Commit Suggestions
         </Text>
-        <Text color="#64748b"> ({suggestions.length})</Text>
+        <Text color={colors.text.muted}> ({suggestions.length})</Text>
       </Box>
 
       {suggestions.map((suggestion, index) => {
@@ -104,11 +115,14 @@ export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
         return (
           <Box key={index} paddingLeft={1}>
             <Box width={2}>
-              <Text color={isSelected ? "#22c55e" : "#64748b"}>
+              <Text color={isSelected ? colors.accent : colors.text.muted}>
                 {isSelected ? "›" : " "}
               </Text>
             </Box>
-            <Text color={isSelected ? "#e2e8f0" : "#94a3b8"} bold={isSelected}>
+            <Text
+              color={isSelected ? colors.text.primary : colors.text.secondary}
+              bold={isSelected}
+            >
               {displayMsg}
             </Text>
           </Box>
@@ -121,7 +135,9 @@ export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
             <Box width={2}>
               <Text
                 color={
-                  selectedIndex === suggestions.length ? "#22c55e" : "#64748b"
+                  selectedIndex === suggestions.length
+                    ? colors.accent
+                    : colors.text.muted
                 }
               >
                 {selectedIndex === suggestions.length ? "›" : " "}
@@ -129,7 +145,9 @@ export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
             </Box>
             <Text
               color={
-                selectedIndex === suggestions.length ? "#38bdf8" : "#64748b"
+                selectedIndex === suggestions.length
+                  ? colors.accent
+                  : colors.text.muted
               }
               bold={selectedIndex === suggestions.length}
             >
@@ -141,8 +159,8 @@ export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
               <Text
                 color={
                   selectedIndex === suggestions.length + 1
-                    ? "#22c55e"
-                    : "#64748b"
+                    ? colors.accent
+                    : colors.text.muted
                 }
               >
                 {selectedIndex === suggestions.length + 1 ? "›" : " "}
@@ -150,7 +168,9 @@ export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
             </Box>
             <Text
               color={
-                selectedIndex === suggestions.length + 1 ? "#f59e0b" : "#64748b"
+                selectedIndex === suggestions.length + 1
+                  ? colors.warning
+                  : colors.text.muted
               }
               bold={selectedIndex === suggestions.length + 1}
             >

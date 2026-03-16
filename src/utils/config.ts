@@ -3,7 +3,7 @@ import { homedir } from "os";
 import path from "path";
 import { Config } from "../types";
 
-const CONFIG_FILE = path.join(homedir(), ".better-commit.json");
+const CONFIG_FILE = path.join(homedir(), ".sncommit.json");
 
 const DEFAULT_CONFIG: Config = {
   model: "llama-3.1-8b-instant",

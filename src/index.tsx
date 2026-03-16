@@ -18,7 +18,7 @@ const handleRawModeError = (error: Error, fallbackMessage: string) => {
 const program = new Command();
 
 program
-  .name("better-commit")
+  .name("sncommit")
   .description("AI-powered git commit message generator with beautiful TUI");
 
 // Load version from package.json so the CLI stays in sync with the published package
@@ -33,7 +33,7 @@ program.option("-p, --push", "push to remote after committing");
 // Subcommand for config
 program
   .command("config")
-  .description("Configure better-commit settings")
+  .description("Configure sncommit settings")
   .action(async () => {
     // Check TTY support first before doing anything
     if (!process.stdin.isTTY) {
@@ -106,7 +106,7 @@ program.action(async () => {
       const hasUnstaged = await gitService.hasUnstagedChanges();
       if (hasUnstaged) {
         console.log(
-          'No staged files. Use "git add ." or run "better-commit -a" to stage all files.',
+          'No staged files. Use "git add ." or run "sncommit -a" to stage all files.',
         );
       } else {
         console.log("No changes to commit. Working tree is clean.");

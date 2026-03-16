@@ -56,7 +56,7 @@ export class GroqService {
       if (error?.status === 401) {
         console.warn("\n\x1b[33m⚠️  Groq API Key is invalid.\x1b[0m");
         console.warn(
-          "   Using static backup suggestions. Run \x1b[36mbetter-commit config\x1b[0m to set your key.\n",
+          "   Using static backup suggestions. Run \x1b[36msncommit config\x1b[0m to set your key.\n",
         );
       } else {
         console.error(
@@ -123,7 +123,7 @@ export class GroqService {
       if (error?.status === 401) {
         console.warn("\n\x1b[33m⚠️  Groq API Key is invalid.\x1b[0m");
         console.warn(
-          "   Using static backup suggestions. Run \x1b[36mbetter-commit config\x1b[0m to set your key.\n",
+          "   Using static backup suggestions. Run \x1b[36msncommit config\x1b[0m to set your key.\n",
         );
       } else {
         console.error(

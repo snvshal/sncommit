@@ -5,8 +5,8 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "better-commit": "dist/index.js",
-    "bc": "dist/index.js"
+    "sncommit": "dist/index.js",
+    "sc": "dist/index.js"
   },
   "files": [
     "dist"

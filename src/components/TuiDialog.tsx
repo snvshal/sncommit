@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Box, Text, useInput } from "ink";
+import { colors } from "../theme/colors";
 
 export type DialogType = "input" | "password" | "textarea" | "select";
 
@@ -90,17 +91,21 @@ export const TuiDialog: React.FC<DialogProps> = ({
     return (
       <Box
         borderStyle="round"
-        borderColor="#22d3ee"
+        borderColor={colors.border.primary}
         flexGrow={1}
         paddingY={1}
         paddingX={2}
       >
         <Text>
-          <Text color="#e2e8f0">{beforeCursor}</Text>
-          <Text backgroundColor="#22d3ee" color="#0f172a" bold>
+          <Text color={colors.text.primary}>{beforeCursor}</Text>
+          <Text
+            backgroundColor={colors.primary}
+            color={colors.text.inverse}
+            bold
+          >
             {cursorChar}
           </Text>
-          <Text color="#e2e8f0">{afterCursor}</Text>
+          <Text color={colors.text.primary}>{afterCursor}</Text>
         </Text>
       </Box>
     );
@@ -113,11 +118,11 @@ export const TuiDialog: React.FC<DialogProps> = ({
       paddingY={1}
       paddingX={2}
       borderStyle="round"
-      borderColor="#334155"
+      borderColor={colors.border.default}
     >
       {/* Header */}
       <Box marginBottom={1}>
-        <Text bold color="#22d3ee">
+        <Text bold color={colors.primary}>
           {title}
         </Text>
       </Box>
@@ -142,7 +147,7 @@ export const TuiDialog: React.FC<DialogProps> = ({
           {renderInputField()}
           {type === "textarea" && (
             <Box marginTop={1}>
-              <Text color="#64748b" dimColor>
+              <Text color={colors.text.muted} dimColor>
                 Enter for new line • Tab to submit
               </Text>
             </Box>
@@ -151,33 +156,38 @@ export const TuiDialog: React.FC<DialogProps> = ({
       )}
 
       {/* Footer */}
-      <Box borderStyle="round" borderColor="#334155" paddingY={1} paddingX={2}>
+      <Box
+        borderStyle="round"
+        borderColor={colors.border.default}
+        paddingY={1}
+        paddingX={2}
+      >
         {type === "select" ? (
           <Box>
-            <Text color="#38bdf8">↑↓</Text>
-            <Text color="#94a3b8"> navigate </Text>
-            <Text color="#22c55e">Enter</Text>
-            <Text color="#94a3b8"> confirm </Text>
-            <Text color="#f97316">Esc</Text>
-            <Text color="#94a3b8"> cancel</Text>
+            <Text color={colors.primary}>↑↓</Text>
+            <Text color={colors.text.secondary}> navigate </Text>
+            <Text color={colors.accent}>Enter</Text>
+            <Text color={colors.text.secondary}> confirm </Text>
+            <Text color={colors.error}>Esc</Text>
+            <Text color={colors.text.secondary}> cancel</Text>
           </Box>
         ) : type === "textarea" ? (
           <Box>
-            <Text color="#38bdf8">←→</Text>
-            <Text color="#94a3b8"> move </Text>
-            <Text color="#22c55e">Tab</Text>
-            <Text color="#94a3b8"> submit </Text>
-            <Text color="#f97316">Esc</Text>
-            <Text color="#94a3b8"> cancel</Text>
+            <Text color={colors.primary}>←→</Text>
+            <Text color={colors.text.secondary}> move </Text>
+            <Text color={colors.accent}>Tab</Text>
+            <Text color={colors.text.secondary}> submit </Text>
+            <Text color={colors.error}>Esc</Text>
+            <Text color={colors.text.secondary}> cancel</Text>
           </Box>
         ) : (
           <Box>
-            <Text color="#38bdf8">←→</Text>
-            <Text color="#94a3b8"> move </Text>
-            <Text color="#22c55e">Enter</Text>
-            <Text color="#94a3b8"> confirm </Text>
-            <Text color="#f97316">Esc</Text>
-            <Text color="#94a3b8"> cancel</Text>
+            <Text color={colors.primary}>←→</Text>
+            <Text color={colors.text.secondary}> move </Text>
+            <Text color={colors.accent}>Enter</Text>
+            <Text color={colors.text.secondary}> confirm </Text>
+            <Text color={colors.error}>Esc</Text>
+            <Text color={colors.text.secondary}> cancel</Text>
           </Box>
         )}
       </Box>

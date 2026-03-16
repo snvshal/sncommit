@@ -2,7 +2,7 @@ import React, { useState, useCallback, useMemo } from "react";
 import { Box, Text, useInput, useApp, Key } from "ink";
 import { configManager } from "../utils/config";
 import { Config } from "../types";
-import { TuiDialog, DialogType } from "./TuiDialog";
+import { colors } from "../theme/colors";
 
 interface ConfigAppProps {
   onExit: (message?: string) => void;
@@ -22,13 +22,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
     }
   }, [exitMessage, exit]);
 
-  const [activeDialog, setActiveDialog] = useState<{
-    key: keyof Config;
-    type: DialogType;
-    title: string;
-    options?: string[];
-  } | null>(null);
-
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const [menuIndex, setMenuIndex] = useState(0);
 
   const modelOptions = useMemo(
@@ -68,11 +62,24 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
       {
         key: "customPrompt" as keyof Config,
         label: "Custom Prompt",
-        type: "textarea" as const,
+        type: "input" as const,
       },
     ],
     [modelOptions],
   );
+
+  const [editValue, setEditValue] = useState("");
+  const [optionIndex, setOptionIndex] = useState(0);
+  const [cursorPosition, setCursorPosition] = useState(0);
+
+  const autoSave = useCallback(() => {
+    const finalConfig = {
+      ...config,
+      maxHistoryCommits: 40,
+      language: "en",
+    };
+    configManager.updateConfig(finalConfig);
+  }, [config]);
 
   const saveAndExit = useCallback(() => {
     const finalConfig = {
@@ -85,221 +92,338 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
     setExitMessage("Configuration saved");
   }, [config, onExit]);
 
-  const cancelAndExit = useCallback(() => {
-    onExit("Configuration cancelled");
-    setExitMessage("Configuration cancelled");
-  }, [onExit]);
-
-  const handleInput = useCallback(
-    (input: string, key: Key) => {
-      if (activeDialog) return;
-
-      if (key.upArrow) {
-        setMenuIndex((prev) => (prev > 0 ? prev - 1 : menuItems.length + 1));
-      } else if (key.downArrow) {
-        setMenuIndex((prev) => (prev < menuItems.length + 1 ? prev + 1 : 0));
-      } else if (key.return) {
-        if (menuIndex < menuItems.length) {
-          const item = menuItems[menuIndex];
-          setActiveDialog({
-            key: item.key,
-            type: item.type,
-            title: `Edit ${item.label}`,
-            options: item.options,
-          });
-        } else if (menuIndex === menuItems.length) {
-          saveAndExit();
-        } else {
-          cancelAndExit();
-        }
-      } else if (key.escape || (key.ctrl && input === "c")) {
-        cancelAndExit();
+  const handleExpand = useCallback(
+    (index: number) => {
+      const item = menuItems[index];
+      setExpandedIndex(index);
+      setOptionIndex(0);
+      if (item.type === "select" && item.options) {
+        const currentValue = config[item.key];
+        const optIdx = item.options.indexOf(currentValue as string);
+        setOptionIndex(optIdx >= 0 ? optIdx : 0);
+      } else {
+        const val = String(config[item.key] || "");
+        setEditValue(val);
+        setCursorPosition(val.length);
       }
     },
-    [activeDialog, menuIndex, menuItems, saveAndExit, cancelAndExit],
+    [menuItems, config],
   );
 
-  useInput(handleInput, { isActive: !activeDialog });
+  const handleCollapse = useCallback(() => {
+    setExpandedIndex(null);
+    setEditValue("");
+    setCursorPosition(0);
+  }, []);
 
-  const handleDialogSubmit = (value: string) => {
-    if (activeDialog) {
-      let finalValue = value;
+  const handleSubmit = useCallback(
+    (index: number) => {
+      const item = menuItems[index];
+      let finalValue = editValue;
 
-      // Convert display label back to actual model ID
-      if (activeDialog.key === "model") {
-        const modelOption = modelOptions.find((m) => m.display === value);
+      if (item.type === "select" && item.options) {
+        finalValue = item.options[optionIndex];
+      }
+
+      if (item.key === "model") {
+        const modelOption = modelOptions.find((m) => m.display === finalValue);
         if (modelOption) {
           finalValue = modelOption.value;
         }
       }
 
-      setConfig((prev) => ({ ...prev, [activeDialog.key]: finalValue }));
-      setActiveDialog(null);
+      const newConfig = { ...config, [item.key]: finalValue };
+      setConfig(newConfig);
+      autoSave();
+      handleCollapse();
+    },
+    [
+      menuItems,
+      editValue,
+      optionIndex,
+      modelOptions,
+      config,
+      autoSave,
+      handleCollapse,
+    ],
+  );
+
+  useInput((input: string, key: Key) => {
+    if (exitMessage) return;
+
+    if (expandedIndex !== null) {
+      const item = menuItems[expandedIndex];
+
+      if (key.escape) {
+        handleCollapse();
+        return;
+      }
+
+      if (item.type === "select" && item.options) {
+        if (key.upArrow) {
+          setOptionIndex((prev) =>
+            prev > 0 ? prev - 1 : item.options!.length - 1,
+          );
+        } else if (key.downArrow) {
+          setOptionIndex((prev) =>
+            prev < item.options!.length - 1 ? prev + 1 : 0,
+          );
+        } else if (key.return) {
+          handleSubmit(expandedIndex);
+        }
+      } else {
+        if (key.return) {
+          handleSubmit(expandedIndex);
+        } else if (key.leftArrow) {
+          setCursorPosition((prev) => Math.max(0, prev - 1));
+        } else if (key.rightArrow) {
+          setCursorPosition((prev) => Math.min(editValue.length, prev + 1));
+        } else if (key.backspace || key.delete) {
+          if (cursorPosition > 0) {
+            setEditValue(
+              (prev) =>
+                prev.slice(0, cursorPosition - 1) + prev.slice(cursorPosition),
+            );
+            setCursorPosition((prev) => prev - 1);
+          }
+        } else if (input && !key.ctrl && !key.meta) {
+          setEditValue(
+            (prev) =>
+              prev.slice(0, cursorPosition) +
+              input +
+              prev.slice(cursorPosition),
+          );
+          setCursorPosition((prev) => prev + input.length);
+        }
+      }
+    } else {
+      if (key.upArrow) {
+        setMenuIndex((prev) => (prev > 0 ? prev - 1 : menuItems.length - 1));
+      } else if (key.downArrow) {
+        setMenuIndex((prev) => (prev < menuItems.length - 1 ? prev + 1 : 0));
+      } else if (key.return) {
+        handleExpand(menuIndex);
+      } else if (key.escape || (key.ctrl && input === "c")) {
+        saveAndExit();
+      }
     }
-  };
+  });
 
-  const handleDialogCancel = () => {
-    setActiveDialog(null);
-  };
-
-  const renderValue = (isSelected: boolean, key: keyof Config) => {
+  const renderValue = (key: keyof Config) => {
     const val = config[key];
-    const textColor = isSelected ? "#111827" : "#e5e7eb";
-    const bgColor = isSelected ? "#60a5fa" : undefined;
 
-    if (!val)
-      return (
-        <Text color={textColor} backgroundColor={bgColor}>
-          (not set)
-        </Text>
-      );
-    if (key === "groqApiKey")
-      return (
-        <Text color={textColor} backgroundColor={bgColor}>
-          ••••••••
-        </Text>
-      );
+    if (!val) return "(not set)";
+    if (key === "groqApiKey") return "••••••••••••••••";
 
-    if (key === "customPrompt")
-      return (
-        <Text color={textColor} backgroundColor={bgColor}>
-          {(val as string).substring(0, 20) +
-            ((val as string).length > 20 ? "..." : "")}
-        </Text>
-      );
-    return (
-      <Text color={textColor} backgroundColor={bgColor}>
-        {val}
-      </Text>
-    );
+    const strVal = String(val);
+    if (key === "customPrompt") {
+      return strVal.length > 30 ? strVal.substring(0, 30) + "..." : strVal;
+    }
+    return strVal;
   };
 
   return (
-    <Box
-      flexDirection="column"
-      paddingX={3}
-      paddingY={1}
-      flexGrow={1}
-      width="100%"
-      borderStyle="round"
-      borderColor="#334155"
-    >
-      {/* Exit Message */}
+    <Box flexDirection="column" paddingY={1} flexGrow={1} width="100%">
       {exitMessage ? (
         <Box flexGrow={1} justifyContent="center" alignItems="center">
-          <Text bold color="#22c55e">
-            {exitMessage}
-          </Text>
-        </Box>
-      ) : activeDialog ? (
-        <Box flexGrow={1} justifyContent="center" alignItems="center">
-          <TuiDialog
-            title={activeDialog.title}
-            type={activeDialog.type}
-            initialValue={String(config[activeDialog.key] || "")}
-            options={activeDialog.options}
-            onSubmit={handleDialogSubmit}
-            onCancel={handleDialogCancel}
-          />
+          <Box
+            flexGrow={1}
+            justifyContent="center"
+            borderStyle="round"
+            borderColor={colors.border.accent}
+            paddingX={4}
+            paddingY={1}
+          >
+            <Text bold color={colors.accent}>
+              {"\u2713"} {exitMessage}
+            </Text>
+          </Box>
         </Box>
       ) : (
-        <Box
-          flexDirection="column"
-          flexGrow={1}
-          borderStyle="round"
-          borderColor="#334155"
-          paddingX={2}
-          paddingTop={1}
-          paddingBottom={1}
-        >
+        <>
           <Box marginBottom={1}>
-            <Text bold color="#22d3ee">
-              Configure Better-Commit
+            <Text bold color={colors.primary}>
+              Configure Sncommit
             </Text>
           </Box>
 
-          {/* Menu Items */}
-          <Box flexDirection="column" marginBottom={2}>
-            {menuItems.map((item, index) => (
-              <Box
-                key={item.key}
-                flexDirection="row"
-                justifyContent="space-between"
-                paddingY={0.5}
-                paddingX={1}
-              >
-                <Box width={24}>
-                  <Text
-                    bold={index === menuIndex}
-                    color={index === menuIndex ? "#0f172a" : "#e2e8f0"}
-                    backgroundColor={
-                      index === menuIndex ? "#38bdf8" : undefined
-                    }
-                  >
-                    {index === menuIndex ? "› " : "  "}
-                    {item.label}
-                  </Text>
+          <Box flexDirection="column" gap={1}>
+            {menuItems.map((item, index) => {
+              const isSel = index === menuIndex && expandedIndex === null;
+              const isExp = expandedIndex === index;
+
+              return (
+                <Box key={item.key} flexDirection="column">
+                  <Box flexDirection="row" alignItems="center">
+                    <Box width={1}>
+                      <Text
+                        bold
+                        color={
+                          isSel ? colors.warning : colors.background.primary
+                        }
+                      >
+                        │
+                      </Text>
+                    </Box>
+                    <Box
+                      flexGrow={1}
+                      backgroundColor={
+                        isSel ? colors.background.primary : undefined
+                      }
+                      paddingX={1}
+                    >
+                      <Text
+                        color={isSel ? colors.warning : colors.text.primary}
+                      >
+                        {item.label}
+                      </Text>
+                    </Box>
+                  </Box>
+                  {!isExp && (
+                    <Box flexDirection="row" alignItems="center">
+                      <Box width={1}>
+                        <Text
+                          bold
+                          color={
+                            isSel ? colors.warning : colors.background.primary
+                          }
+                        >
+                          │
+                        </Text>
+                      </Box>
+                      <Box
+                        flexGrow={1}
+                        backgroundColor={
+                          isSel ? colors.background.primary : undefined
+                        }
+                        paddingX={1}
+                      >
+                        <Text
+                          color={
+                            isSel ? colors.text.secondary : colors.text.muted
+                          }
+                        >
+                          {renderValue(item.key)}
+                        </Text>
+                      </Box>
+                    </Box>
+                  )}
+
+                  {isExp && item.type === "select" && item.options && (
+                    <Box flexDirection="column">
+                      {item.options.map((opt, optIdx) => (
+                        <Box key={opt} flexDirection="row" alignItems="center">
+                          <Box width={1}>
+                            <Text
+                              bold
+                              color={
+                                optIdx === optionIndex
+                                  ? colors.warning
+                                  : colors.background.primary
+                              }
+                            >
+                              │
+                            </Text>
+                          </Box>
+                          <Box
+                            flexGrow={1}
+                            backgroundColor={
+                              optIdx === optionIndex
+                                ? colors.background.primary
+                                : undefined
+                            }
+                            paddingX={1}
+                          >
+                            <Text
+                              color={
+                                optIdx === optionIndex
+                                  ? colors.warning
+                                  : colors.text.muted
+                              }
+                            >
+                              {opt}
+                            </Text>
+                          </Box>
+                        </Box>
+                      ))}
+                    </Box>
+                  )}
+
+                  {isExp && item.type !== "select" && (
+                    <Box flexDirection="row" alignItems="center">
+                      <Box width={1}>
+                        <Text bold color={colors.warning}>
+                          │
+                        </Text>
+                      </Box>
+                      <Box
+                        flexGrow={1}
+                        backgroundColor={colors.background.primary}
+                        paddingX={1}
+                      >
+                        <Text color={colors.text.primary}>
+                          {item.type === "password" ? (
+                            <>
+                              <Text color={colors.text.primary}>
+                                {editValue
+                                  .split("")
+                                  .map(() => "•")
+                                  .join("")}
+                              </Text>
+                              <Text
+                                backgroundColor={colors.warning}
+                                color={colors.text.inverse}
+                              >
+                                {cursorPosition >= editValue.length ? " " : " "}
+                              </Text>
+                            </>
+                          ) : (
+                            <>
+                              <Text color={colors.text.primary}>
+                                {editValue.slice(0, cursorPosition)}
+                              </Text>
+                              <Text
+                                backgroundColor={colors.warning}
+                                color={colors.text.inverse}
+                              >
+                                {editValue[cursorPosition] || " "}
+                              </Text>
+                              <Text color={colors.text.primary}>
+                                {editValue.slice(cursorPosition + 1)}
+                              </Text>
+                            </>
+                          )}
+                        </Text>
+                      </Box>
+                    </Box>
+                  )}
                 </Box>
-                <Box flexGrow={1}>
-                  <Text
-                    color={index === menuIndex ? "#0f172a" : "#e2e8f0"}
-                    backgroundColor={
-                      index === menuIndex ? "#38bdf8" : undefined
-                    }
-                  >
-                    {renderValue(index === menuIndex, item.key)}
-                  </Text>
-                </Box>
-              </Box>
-            ))}
+              );
+            })}
           </Box>
 
-          {/* Actions */}
-          <Box flexDirection="row" marginBottom={0}>
-            <Box marginRight={2}>
-              <Text
-                bold={menuIndex === menuItems.length}
-                color={menuIndex === menuItems.length ? "#0f172a" : "#22c55e"}
-                backgroundColor={
-                  menuIndex === menuItems.length ? "#22c55e" : undefined
-                }
-              >
-                {menuIndex === menuItems.length ? "› " : "  "} Save & Exit
-              </Text>
-            </Box>
-            <Box>
-              <Text
-                bold={menuIndex === menuItems.length + 1}
-                color={
-                  menuIndex === menuItems.length + 1 ? "#0f172a" : "#ef4444"
-                }
-                backgroundColor={
-                  menuIndex === menuItems.length + 1 ? "#f97316" : undefined
-                }
-              >
-                {menuIndex === menuItems.length + 1 ? "› " : "  "}Cancel
-              </Text>
-            </Box>
+          <Box marginTop={1}>
+            <Text color={colors.text.muted}>
+              {expandedIndex !== null ? (
+                <>
+                  <Text color={colors.primary}>↑↓</Text> navigate
+                  <Text color={colors.text.secondary}> • </Text>
+                  <Text color={colors.accent}>Enter</Text> confirm
+                  <Text color={colors.text.secondary}> • </Text>
+                  <Text color={colors.error}>Esc</Text> cancel
+                </>
+              ) : (
+                <>
+                  <Text color={colors.primary}>↑↓</Text> navigate
+                  <Text color={colors.text.secondary}> • </Text>
+                  <Text color={colors.accent}>Enter</Text> edit
+                  <Text color={colors.text.secondary}> • </Text>
+                  <Text color={colors.error}>Esc</Text> exit
+                </>
+              )}
+            </Text>
           </Box>
-        </Box>
-      )}
-
-      {/* Footer - only show when no dialog is open and not exiting */}
-      {!activeDialog && !exitMessage && (
-        <Box
-          borderStyle="round"
-          borderColor="#334155"
-          paddingY={1}
-          paddingX={2}
-        >
-          <Box>
-            <Text color="#94a3b8">Use </Text>
-            <Text color="#38bdf8">↑↓</Text>
-            <Text color="#94a3b8"> to navigate </Text>
-            <Text color="#22c55e">Enter</Text>
-            <Text color="#94a3b8"> to edit/select</Text>
-          </Box>
-        </Box>
+        </>
       )}
     </Box>
   );
