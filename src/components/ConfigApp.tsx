@@ -223,7 +223,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
   };
 
   return (
-    <Box flexDirection="column" paddingY={1} flexGrow={1} width="100%">
+    <Box flexDirection="column" flexGrow={1} width="100%">
       {exitMessage ? (
         <Box flexGrow={1} justifyContent="center" alignItems="center">
           <Box
