@@ -11,7 +11,6 @@ interface CommitSuggestionsProps {
   onTryAgain: () => void;
   onCustomInput: () => void;
   isLoading: boolean;
-  isUsingFallback?: boolean;
 }
 
 export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
@@ -22,11 +21,8 @@ export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
   onTryAgain,
   onCustomInput,
   isLoading,
-  isUsingFallback = false,
 }) => {
-  const totalOptions = isUsingFallback
-    ? suggestions.length
-    : suggestions.length + 2;
+  const totalOptions = suggestions.length + 2;
   const [frame, setFrame] = useState(0);
 
   const spinnerFrames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
@@ -52,12 +48,10 @@ export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
     } else if (key.return) {
       if (selectedIndex < suggestions.length) {
         onCommit(selectedIndex);
-      } else if (!isUsingFallback) {
-        if (selectedIndex === suggestions.length) {
-          onTryAgain();
-        } else if (selectedIndex === suggestions.length + 1) {
-          onCustomInput();
-        }
+      } else if (selectedIndex === suggestions.length) {
+        onTryAgain();
+      } else if (selectedIndex === suggestions.length + 1) {
+        onCustomInput();
       }
     }
   });
@@ -129,56 +123,54 @@ export const CommitSuggestions: React.FC<CommitSuggestionsProps> = ({
         );
       })}
 
-      {!isUsingFallback && (
-        <Box marginTop={1} paddingLeft={1} flexDirection="row">
-          <Box marginRight={4}>
-            <Box width={2}>
-              <Text
-                color={
-                  selectedIndex === suggestions.length
-                    ? colors.accent
-                    : colors.text.muted
-                }
-              >
-                {selectedIndex === suggestions.length ? "›" : " "}
-              </Text>
-            </Box>
+      <Box marginTop={1} paddingLeft={1} flexDirection="row">
+        <Box marginRight={4}>
+          <Box width={2}>
             <Text
               color={
                 selectedIndex === suggestions.length
                   ? colors.accent
                   : colors.text.muted
               }
-              bold={selectedIndex === suggestions.length}
             >
-              ↻ Try again
+              {selectedIndex === suggestions.length ? "›" : " "}
             </Text>
           </Box>
-          <Box>
-            <Box width={2}>
-              <Text
-                color={
-                  selectedIndex === suggestions.length + 1
-                    ? colors.accent
-                    : colors.text.muted
-                }
-              >
-                {selectedIndex === suggestions.length + 1 ? "›" : " "}
-              </Text>
-            </Box>
+          <Text
+            color={
+              selectedIndex === suggestions.length
+                ? colors.accent
+                : colors.text.muted
+            }
+            bold={selectedIndex === suggestions.length}
+          >
+            ↻ Try again
+          </Text>
+        </Box>
+        <Box>
+          <Box width={2}>
             <Text
               color={
                 selectedIndex === suggestions.length + 1
-                  ? colors.warning
+                  ? colors.accent
                   : colors.text.muted
               }
-              bold={selectedIndex === suggestions.length + 1}
             >
-              ✎ Custom input
+              {selectedIndex === suggestions.length + 1 ? "›" : " "}
             </Text>
           </Box>
+          <Text
+            color={
+              selectedIndex === suggestions.length + 1
+                ? colors.warning
+                : colors.text.muted
+            }
+            bold={selectedIndex === suggestions.length + 1}
+          >
+            ✎ Custom input
+          </Text>
         </Box>
-      )}
+      </Box>
     </Box>
   );
 };
