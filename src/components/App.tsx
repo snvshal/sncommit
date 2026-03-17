@@ -28,6 +28,7 @@ export const BetterCommitApp: React.FC<AppProps> = ({
     selectedIndex: 0,
     isLoading: false,
     error: undefined,
+    warning: undefined,
   });
 
   const [isUsingFallback, setIsUsingFallback] = useState(false);
@@ -78,6 +79,17 @@ export const BetterCommitApp: React.FC<AppProps> = ({
     }
   }, [state.error]);
 
+  // Auto-exit when warning occurs
+  useEffect(() => {
+    if (state.warning) {
+      const timer = setTimeout(() => {
+        onExit(state.warning!);
+        setExitMessage(state.warning!);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [state.warning, onExit]);
+
   // Handle global exit keys (disabled when custom input is active)
   useInput(
     (input, key) => {
@@ -125,8 +137,8 @@ export const BetterCommitApp: React.FC<AppProps> = ({
     if (!config.groqApiKey || config.groqApiKey.trim() === "") {
       setState((prev) => ({
         ...prev,
-        error:
-          'Groq API key not configured. Run "sncommit config" to set it up.',
+        warning:
+          'Groq API key not configured. Run "sncommit config" to set it up. Go to https://console.groq.com/keys to create a Groq API key.',
         isLoading: false,
       }));
       return;
@@ -257,6 +269,29 @@ export const BetterCommitApp: React.FC<AppProps> = ({
     );
   }
 
+  // Warning State
+  if (state.warning) {
+    return (
+      <Box
+        flexDirection="column"
+        paddingX={2}
+        paddingY={1}
+        borderStyle="round"
+        borderColor={colors.border.warning}
+        flexGrow={1}
+      >
+        <Box flexGrow={1} justifyContent="center" alignItems="center">
+          <Text bold color={colors.warning}>
+            Warning
+          </Text>
+        </Box>
+        <Box marginTop={1}>
+          <Text color={colors.text.secondary}>{state.warning}</Text>
+        </Box>
+      </Box>
+    );
+  }
+
   // Success State
   if (successMessage) {
     return (
@@ -305,7 +340,7 @@ export const BetterCommitApp: React.FC<AppProps> = ({
   }
 
   // Loading State
-  if (state.stagedFiles.length === 0 && !state.error) {
+  if (state.stagedFiles.length === 0 && !state.error && !state.warning) {
     return (
       <Box flexDirection="column" padding={2} justifyContent="center">
         <Text bold color={colors.primary}>

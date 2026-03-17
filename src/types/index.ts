@@ -33,4 +33,5 @@ export interface AppState {
   selectedIndex: number;
   isLoading: boolean;
   error?: string;
+  warning?: string;
 }
