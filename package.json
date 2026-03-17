@@ -1,6 +1,6 @@
 {
   "name": "sncommit",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "AI-powered git commit message generator with beautiful TUI",
   "type": "module",
   "main": "dist/index.js",
