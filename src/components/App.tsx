@@ -180,11 +180,25 @@ export const BetterCommitApp: React.FC<AppProps> = ({
       }));
       setIsUsingFallback(hasFallback);
     } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        error: `Failed to generate suggestions: ${error instanceof Error ? error.message : String(error)}`,
-        isLoading: false,
-      }));
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      const isInvalidApiKey = errorMessage
+        .toLowerCase()
+        .includes("invalid api key");
+
+      if (isInvalidApiKey) {
+        setState((prev) => ({
+          ...prev,
+          warning: errorMessage,
+          isLoading: false,
+        }));
+      } else {
+        setState((prev) => ({
+          ...prev,
+          error: `Failed to generate suggestions: ${errorMessage}`,
+          isLoading: false,
+        }));
+      }
     }
   };
 

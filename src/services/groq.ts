@@ -54,20 +54,14 @@ export class GroqService {
     } catch (e: unknown) {
       const error = e as { status?: number; message?: string };
       if (error?.status === 401) {
-        console.warn("\n\x1b[33m⚠️  Groq API Key is invalid.\x1b[0m");
-        console.warn(
-          "   Using static backup suggestions. Run \x1b[36msncommit config\x1b[0m to set your key.\n",
-        );
-      } else {
-        console.error(
-          "Error generation suggestions:",
-          error?.message || String(e),
+        throw new Error(
+          'Invalid API Key. Run "sncommit config" to set your Groq API key. Get one at https://console.groq.com/keys',
         );
       }
 
-      // Fallback to mock suggestions when API fails
-      const fallbackSuggestions = this.getFallbackSuggestions(stagedFiles);
-      return fallbackSuggestions.map((s) => ({ ...s, isFallback: true }));
+      throw new Error(
+        `Error generating suggestions: ${error?.message || String(e)}`,
+      );
     }
   }
 
@@ -121,19 +115,14 @@ export class GroqService {
     } catch (e: unknown) {
       const error = e as { status?: number; message?: string };
       if (error?.status === 401) {
-        console.warn("\n\x1b[33m⚠️  Groq API Key is invalid.\x1b[0m");
-        console.warn(
-          "   Using static backup suggestions. Run \x1b[36msncommit config\x1b[0m to set your key.\n",
-        );
-      } else {
-        console.error(
-          "Error generation suggestions:",
-          error?.message || String(e),
+        throw new Error(
+          'Invalid API Key. Run "sncommit config" to set your Groq API key. Get one at https://console.groq.com/keys',
         );
       }
-      // Fallback to mock suggestions when API fails (silently handle)
-      const fallbackSuggestions = this.getFallbackSuggestions(stagedFiles);
-      return fallbackSuggestions.map((s) => ({ ...s, isFallback: true }));
+
+      throw new Error(
+        `Error generating suggestions: ${error?.message || String(e)}`,
+      );
     }
   }
 
