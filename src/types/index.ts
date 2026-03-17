@@ -17,7 +17,6 @@ export interface CommitSuggestion {
   message: string;
   type?: string;
   description?: string;
-  isFallback?: boolean;
 }
 
 export interface GitCommit {
@@ -33,4 +32,5 @@ export interface AppState {
   selectedIndex: number;
   isLoading: boolean;
   error?: string;
+  warning?: string;
 }

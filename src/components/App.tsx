@@ -28,9 +28,9 @@ export const BetterCommitApp: React.FC<AppProps> = ({
     selectedIndex: 0,
     isLoading: false,
     error: undefined,
+    warning: undefined,
   });
 
-  const [isUsingFallback, setIsUsingFallback] = useState(false);
   const [exitMessage, setExitMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | undefined>(
     undefined,
@@ -77,6 +77,17 @@ export const BetterCommitApp: React.FC<AppProps> = ({
       setExitMessage(state.error);
     }
   }, [state.error]);
+
+  // Auto-exit when warning occurs
+  useEffect(() => {
+    if (state.warning) {
+      const timer = setTimeout(() => {
+        onExit(state.warning!);
+        setExitMessage(state.warning!);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [state.warning, onExit]);
 
   // Handle global exit keys (disabled when custom input is active)
   useInput(
@@ -125,8 +136,8 @@ export const BetterCommitApp: React.FC<AppProps> = ({
     if (!config.groqApiKey || config.groqApiKey.trim() === "") {
       setState((prev) => ({
         ...prev,
-        error:
-          'Groq API key not configured. Run "sncommit config" to set it up.',
+        warning:
+          'Groq API key not configured. Run "sncommit config" to set it up. Go to https://console.groq.com/keys to create a Groq API key.',
         isLoading: false,
       }));
       return;
@@ -159,20 +170,32 @@ export const BetterCommitApp: React.FC<AppProps> = ({
         );
       }
 
-      const hasFallback = suggestions.some((s) => s.isFallback);
       setState((prev) => ({
         ...prev,
         suggestions,
         isLoading: false,
         error: undefined,
       }));
-      setIsUsingFallback(hasFallback);
     } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        error: `Failed to generate suggestions: ${error instanceof Error ? error.message : String(error)}`,
-        isLoading: false,
-      }));
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      const isInvalidApiKey = errorMessage
+        .toLowerCase()
+        .includes("invalid api key");
+
+      if (isInvalidApiKey) {
+        setState((prev) => ({
+          ...prev,
+          warning: errorMessage,
+          isLoading: false,
+        }));
+      } else {
+        setState((prev) => ({
+          ...prev,
+          error: `Failed to generate suggestions: ${errorMessage}`,
+          isLoading: false,
+        }));
+      }
     }
   };
 
@@ -257,6 +280,29 @@ export const BetterCommitApp: React.FC<AppProps> = ({
     );
   }
 
+  // Warning State
+  if (state.warning) {
+    return (
+      <Box
+        flexDirection="column"
+        paddingX={2}
+        paddingY={1}
+        borderStyle="round"
+        borderColor={colors.border.warning}
+        flexGrow={1}
+      >
+        <Box flexGrow={1} justifyContent="center" alignItems="center">
+          <Text bold color={colors.warning}>
+            Warning
+          </Text>
+        </Box>
+        <Box marginTop={1}>
+          <Text color={colors.text.secondary}>{state.warning}</Text>
+        </Box>
+      </Box>
+    );
+  }
+
   // Success State
   if (successMessage) {
     return (
@@ -305,7 +351,7 @@ export const BetterCommitApp: React.FC<AppProps> = ({
   }
 
   // Loading State
-  if (state.stagedFiles.length === 0 && !state.error) {
+  if (state.stagedFiles.length === 0 && !state.error && !state.warning) {
     return (
       <Box flexDirection="column" padding={2} justifyContent="center">
         <Text bold color={colors.primary}>
@@ -340,7 +386,7 @@ export const BetterCommitApp: React.FC<AppProps> = ({
   return (
     <Box
       flexDirection="column"
-      paddingX={2}
+      paddingX={3}
       paddingY={1}
       borderStyle="round"
       borderColor={colors.border.default}
@@ -376,7 +422,6 @@ export const BetterCommitApp: React.FC<AppProps> = ({
           onTryAgain={handleTryAgain}
           onCustomInput={handleCustomInput}
           isLoading={state.isLoading}
-          isUsingFallback={isUsingFallback}
         />
       )}
 
