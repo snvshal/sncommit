@@ -72,6 +72,15 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
   const [optionIndex, setOptionIndex] = useState(0);
   const [cursorPosition, setCursorPosition] = useState(0);
 
+  const maskedPassword = useMemo(
+    () =>
+      editValue
+        .split("")
+        .map(() => "•")
+        .join(""),
+    [editValue],
+  );
+
   const autoSave = useCallback(() => {
     const finalConfig = {
       ...config,
@@ -179,13 +188,16 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
         } else if (key.rightArrow) {
           setCursorPosition((prev) => Math.min(editValue.length, prev + 1));
         } else if (key.backspace || key.delete) {
-          if (cursorPosition > 0) {
-            setEditValue(
-              (prev) =>
-                prev.slice(0, cursorPosition - 1) + prev.slice(cursorPosition),
+          setEditValue((prev) => {
+            if (prev.length === 0) return prev;
+            if (cursorPosition === prev.length) {
+              return prev.slice(0, -1);
+            }
+            return (
+              prev.slice(0, cursorPosition - 1) + prev.slice(cursorPosition)
             );
-            setCursorPosition((prev) => prev - 1);
-          }
+          });
+          setCursorPosition((prev) => Math.max(0, prev - 1));
         } else if (input && !key.ctrl && !key.meta) {
           setEditValue(
             (prev) =>
@@ -365,10 +377,7 @@ export const ConfigApp: React.FC<ConfigAppProps> = ({ onExit }) => {
                           {item.type === "password" ? (
                             <>
                               <Text color={colors.text.primary}>
-                                {editValue
-                                  .split("")
-                                  .map(() => "•")
-                                  .join("")}
+                                {maskedPassword}
                               </Text>
                               <Text
                                 backgroundColor={colors.warning}
